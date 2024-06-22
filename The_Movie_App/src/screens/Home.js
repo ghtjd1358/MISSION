@@ -1,47 +1,100 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchNowPlaying, fetchPopular, fetchTopRated, fetchUpcoming } from '../../Reducer/slice/movieSlice';
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const { 
+    nowPlayingMovies, 
+    popularMovies, 
+    topRatedMovies, 
+    upcomingMovies, 
+    nowPlayingStatus, 
+    popularStatus, 
+    topRatedStatus, 
+    upcomingStatus 
+  } = useSelector(state => state.movies);
+
+  useEffect(() => {
+    dispatch(fetchNowPlaying());
+    dispatch(fetchPopular());
+    dispatch(fetchTopRated());
+    dispatch(fetchUpcoming());
+  }, [dispatch]);
+
+  const renderMovieItem = ({ item }) => (
+    <View style={styles.movieItem}>
+      <Text>{item.title}</Text>
+    </View>
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="white" barStyle="dark-content" />
-      <View style={styles.header}>
-        <Text style={styles.title}>The Movie app</Text>
-        <View style={styles.icons}>
-          <FontAwesome name="plus-square-o" style={styles.icon} />
-          <Feather name="navigation" style={styles.icon} />
-        </View>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Now Playing</Text>
+      {nowPlayingStatus === 'loading' ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          data={nowPlayingMovies}
+          renderItem={renderMovieItem}
+          keyExtractor={item => item.id.toString()}
+          horizontal
+        />
+      )}
+
+      <Text style={styles.sectionTitle}>Popular</Text>
+      {popularStatus === 'loading' ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          data={popularMovies}
+          renderItem={renderMovieItem}
+          keyExtractor={item => item.id.toString()}
+          horizontal
+        />
+      )}
+
+      <Text style={styles.sectionTitle}>Top Rated</Text>
+      {topRatedStatus === 'loading' ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          data={topRatedMovies}
+          renderItem={renderMovieItem}
+          keyExtractor={item => item.id.toString()}
+          horizontal
+        />
+      )}
+
+      <Text style={styles.sectionTitle}>Upcoming</Text>
+      {upcomingStatus === 'loading' ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          data={upcomingMovies}
+          renderItem={renderMovieItem}
+          keyExtractor={item => item.id.toString()}
+          horizontal
+        />
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    padding: 16,
   },
-  header: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    paddingHorizontal: 15,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  icons: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
+  sectionTitle: {
     fontSize: 24,
-    paddingHorizontal: 15,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  movieItem: {
+    marginRight: 16,
   },
 });
 

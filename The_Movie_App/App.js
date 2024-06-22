@@ -10,7 +10,8 @@ import Status from './src/screens/Status';
 import FriendProfile from './src/screens/FriendProfile';
 import EditProfile from './src/screens/EditProfile';
 import Ionic from 'react-native-vector-icons/Ionicons'
-
+import { Provider } from 'react-redux';
+import store from './Reducer/store'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,6 +54,7 @@ const BottomTabScreen = () => {
 
 function App() {
   return (
+  <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Bottom" component={BottomTabScreen} />
@@ -61,6 +63,7 @@ function App() {
         <Stack.Screen name="EditProfile" component={EditProfile} />
       </Stack.Navigator>
     </NavigationContainer>
+  </Provider>
   );
 }
 
