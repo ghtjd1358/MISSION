@@ -1,14 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import Favorites from '../components/Favorites';
 
-const Profile = () => {
+const ProfileScreen = () => {
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  )
-}
+      <Favorites />
+  );
+};
 
-export default Profile
 
-const styles = StyleSheet.create({})
+
+export default ProfileScreen;

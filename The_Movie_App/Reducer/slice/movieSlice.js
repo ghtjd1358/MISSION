@@ -2,25 +2,25 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_KEY = '95cf4754aa20e43e9a9c24ba6ab4df52';
-const BASE_URL = 'https://api.themoviedb.org/3';
+const URL = 'https://api.themoviedb.org/3';
 
 export const fetchNowPlaying = createAsyncThunk('movies/fetchNowPlaying', async () => {
-  const response = await axios.get(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}`);
+  const response = await axios.get(`${URL}/movie/now_playing?api_key=${API_KEY}&language=ko`);
   return response.data.results;
 });
 
 export const fetchPopular = createAsyncThunk('movies/fetchPopular', async () => {
-  const response = await axios.get(`${BASE_URL}/movie/popular?api_key=${API_KEY}`);
+  const response = await axios.get(`${URL}/movie/popular?api_key=${API_KEY}&language=ko`);
   return response.data.results;
 });
 
 export const fetchTopRated = createAsyncThunk('movies/fetchTopRated', async () => {
-  const response = await axios.get(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`);
+  const response = await axios.get(`${URL}/movie/top_rated?api_key=${API_KEY}&language=ko`);
   return response.data.results;
 });
 
 export const fetchUpcoming = createAsyncThunk('movies/fetchUpcoming', async () => {
-  const response = await axios.get(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}`);
+  const response = await axios.get(`${URL}/movie/upcoming?api_key=${API_KEY}&language=ko`);
   return response.data.results;
 });
 
