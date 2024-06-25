@@ -1,18 +1,17 @@
-import { useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMorePopular } from '../../Reducer/slice/movieSlice';
-import { useNavigation } from '@react-navigation/native';
+import { fetchNowPlaying, fetchPopular, fetchTopRated, fetchUpcoming } from '../../Reducer/slice/movieSlice';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import styles from '../components/styles/moremovieStyle';
 
 const MoreMovies = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const { popularMovies, popularStatus } = useSelector(state => state.movies);
-
-  useEffect(() => {
-    dispatch(fetchMorePopular());
-  }, [dispatch]);
+  const route = useRoute();
+  const { title, movies } = route.params || {};
+  const { popularMovies, popularStatus } = useSelector(state => state.movies); 
+  const [page, setPage] = useState(1);
 
   const renderMovieItem = ({ item }) => (
     <TouchableOpacity 
@@ -24,53 +23,43 @@ const MoreMovies = () => {
         style={styles.poster}
       />
       <Text style={styles.movieTitle}>{item.title}</Text>
-      <Text style={styles.movieRating}>Rating: {item.vote_average}</Text>
+      <Text style={styles.movieRating}>평점: {item.vote_average}</Text>
     </TouchableOpacity>
   );
 
+  const loadMoreMovies = () => {
+    if (popularStatus !== 'loading') {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (page > 1) {
+      dispatch(fetchNowPlaying({ page }));
+      dispatch(fetchPopular({page}));
+      dispatch(fetchTopRated({page}));
+      dispatch(fetchUpcoming({page}));
+    }
+  }, [page, dispatch]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Popular Movies</Text>
-      {popularStatus === 'loading' ? (
+      <Text style={styles.sectionTitle}>{title || "Popular Movies"}</Text>
+      {popularStatus === 'loading' && (!movies || movies.length === 0) ? (
         <ActivityIndicator size="large" />
       ) : (
         <FlatList
-          data={popularMovies}
+          data={movies || popularMovies}
           renderItem={renderMovieItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.id.toString()}  
+          onEndReached={loadMoreMovies}
+          onEndReachedThreshold={1}
+          extraData={movies || popularMovies}
+          initialNumToRender={10}
         />
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  movieItem: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  poster: {
-    width: 200,
-    height: 300,
-  },
-  movieTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  movieRating: {
-    fontSize: 16,
-    color: 'gray',
-  },
-});
 
 export default MoreMovies;

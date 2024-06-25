@@ -6,12 +6,12 @@ import Home from './src/screens/Home';
 import Search from './src/screens/Search';
 import Actor from './src/screens/Actor';
 import Profile from './src/screens/Profile';
+import MoreMovies from './src/screens/MoreMovie';
 import { NavigationContainer } from '@react-navigation/native';
 import Detail from './src/screens/Detail';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import store from './Reducer/store';
-import MoreMovie from './src/screens/MoreMovie';
 import app from './firebase';
 import Login from './src/screens/Login';
 import { getAuth, signOut } from 'firebase/auth';
@@ -100,8 +100,8 @@ function App() {
             component={Detail}
           />
           <Stack.Screen
-            name="MoreMovie"
-            component={MoreMovie}
+            name="MoreMovies"
+            component={MoreMovies}
           />
         </Stack.Navigator>
       </NavigationContainer>

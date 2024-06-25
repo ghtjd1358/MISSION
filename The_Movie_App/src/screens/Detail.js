@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { movieDetail } from '../../Reducer/slice/detailSlice';
 import FavoriteButton from '../components/FavoriteButton';
+import styles from '../components/styles/detailStyles';
+// import StarRating from 'react-native-star-rating'; 
 
 const Detail = ({ route }) => {
   const { id } = route.params;
@@ -12,7 +14,7 @@ const Detail = ({ route }) => {
   const status = useSelector((state) => state.detail.status);
   const error = useSelector((state) => state.detail.error);
   const [videoId, setVideoId] = useState(null);
-
+ 
   useEffect(() => {
     dispatch(movieDetail(id));
   }, [dispatch, id]);
@@ -27,9 +29,8 @@ const Detail = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {movie && (
+      {movie && ( // movie가 유효한 경우에만 렌더링
         <>
-         <RatingComponent/>
           <View style={styles.movieInfoContainer}>
             <Image
               source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
@@ -38,13 +39,20 @@ const Detail = ({ route }) => {
             />
             <View style={styles.movieDetailsContainer}>
               <Text style={styles.movieTitle}>{movie.title}</Text>
-              <Text style={styles.movieRating}>평점: {movie.vote_average}</Text>
+              {/* <StarRating
+                disabled={false}
+                maxStars={5}
+                value={movie.vote_average}
+                starSize={30}
+                fullStarColor={'gold'}
+                emptyStarColor={'gold'}
+              /> */}
               <Text style={styles.movieDetail}>개봉일: {movie.release_date}</Text>
-              <Text style={styles.movieDetail}>국가: {movie.production_countries?.map(c => c.name).join(', ')}</Text>
-              <Text style={styles.movieDetail}>언어: {movie.spoken_languages?.map(l => l.name).join(', ')}</Text>
-              <Text style={styles.movieDetail}>수익: ${movie.revenue?.toLocaleString()}</Text>
-              <Text style={styles.movieDetail}>제작회사: {movie.production_companies?.map(c => c.name).join(', ')}</Text>
-              <Text style={styles.movieDetail}>장르: {movie.genres?.map(g => g.name).join(', ')}</Text>
+              <Text style={styles.movieDetail}>국가: {movie.production_countries.map(con => con.name).join(', ')}</Text>
+              <Text style={styles.movieDetail}>언어: {movie.spoken_languages.map(l => l.name).join(', ')}</Text>
+              <Text style={styles.movieDetail}>수익: ${movie.revenue.toLocaleString()}</Text>
+              <Text style={styles.movieDetail}>제작회사: {movie.production_companies.map(c => c.name).join(', ')}</Text>
+              <Text style={styles.movieDetail}>장르: {movie.genres.map(g => g.name).join(', ')}</Text>
 
               <FavoriteButton movieId={id} />
             </View>
@@ -135,103 +143,5 @@ const Detail = ({ route }) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
-  },
-  movieInfoContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  movieImage: {
-    width: 160,
-    height: 250,
-    borderRadius: 10,
-  },
-  movieDetailsContainer: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  movieTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color : '#000'
-  },
-  movieRating: {
-    fontSize: 16,
-    marginBottom: 5,
-    color : '#000'
-  },
-  movieDetail: {
-    fontSize: 14,
-    marginBottom: 3,
-    color : '#000'
-  },
-  movieDescription: {
-    fontSize: 16,
-    marginBottom: 20,
-    color : '#000'
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color : '#000'
-  },
-  actorContainer: {
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  actorImage: {
-    width: 100,
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  actorName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color : '#000'
-  },
-  actorCharacter: {
-    fontSize: 12,
-    color: 'gray',
-    textAlign: 'center',
-    color : 'green'
-  },
-  videoContainer: {
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  videoThumbnail: {
-    width: 150,
-    height: 100,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  videoLink: {
-    fontSize: 14,
-    color : '#000',
-    textAlign: 'center',
-  },
-  similarMovieContainer: {
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  similarMovie: {
-    width: 100,
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  similarMovieTitle: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-});
 
 export default Detail;

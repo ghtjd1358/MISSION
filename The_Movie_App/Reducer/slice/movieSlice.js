@@ -4,23 +4,31 @@ import axios from 'axios';
 const API_KEY = '95cf4754aa20e43e9a9c24ba6ab4df52';
 const URL = 'https://api.themoviedb.org/3';
 
-export const fetchNowPlaying = createAsyncThunk('movies/fetchNowPlaying', async () => {
-  const response = await axios.get(`${URL}/movie/now_playing?api_key=${API_KEY}&language=ko`);
+export const fetchNowPlaying = createAsyncThunk('movies/fetchNowPlaying', async (_, { getState }) => {
+  const state = getState();
+  const nextPage = Math.floor(state.movies.nowPlayingMovies.length / 20) + 1;
+  const response = await axios.get(`${URL}/movie/now_playing?api_key=${API_KEY}&language=ko&page=${nextPage}`);
   return response.data.results;
 });
 
-export const fetchPopular = createAsyncThunk('movies/fetchPopular', async () => {
-  const response = await axios.get(`${URL}/movie/popular?api_key=${API_KEY}&language=ko`);
+export const fetchPopular = createAsyncThunk('movies/fetchPopular', async (_, { getState }) => {
+  const state = getState();
+  const nextPage = Math.floor(state.movies.popularMovies.length / 20) + 1;
+  const response = await axios.get(`${URL}/movie/popular?api_key=${API_KEY}&language=ko&page=${nextPage}`);
   return response.data.results;
 });
 
-export const fetchTopRated = createAsyncThunk('movies/fetchTopRated', async () => {
-  const response = await axios.get(`${URL}/movie/top_rated?api_key=${API_KEY}&language=ko`);
+export const fetchTopRated = createAsyncThunk('movies/fetchTopRated', async (_, { getState }) => {
+  const state = getState();
+  const nextPage = Math.floor(state.movies.topRatedMovies.length / 20) + 1;
+  const response = await axios.get(`${URL}/movie/top_rated?api_key=${API_KEY}&language=ko&page=${nextPage}`);
   return response.data.results;
 });
 
-export const fetchUpcoming = createAsyncThunk('movies/fetchUpcoming', async () => {
-  const response = await axios.get(`${URL}/movie/upcoming?api_key=${API_KEY}&language=ko`);
+export const fetchUpcoming = createAsyncThunk('movies/fetchUpcoming', async (_, { getState }) => {
+  const state = getState();
+  const nextPage = Math.floor(state.movies.upcomingMovies.length / 20) + 1;
+  const response = await axios.get(`${URL}/movie/upcoming?api_key=${API_KEY}&language=ko&page=${nextPage}`);
   return response.data.results;
 });
 
@@ -48,7 +56,7 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchNowPlaying.fulfilled, (state, action) => {
         state.nowPlayingStatus = 'succeeded';
-        state.nowPlayingMovies = action.payload;
+        state.nowPlayingMovies = [...state.nowPlayingMovies, ...action.payload];
       })
       .addCase(fetchNowPlaying.rejected, (state, action) => {
         state.nowPlayingStatus = 'failed';
@@ -59,7 +67,7 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchPopular.fulfilled, (state, action) => {
         state.popularStatus = 'succeeded';
-        state.popularMovies = action.payload;
+        state.popularMovies = [...state.popularMovies, ...action.payload];
       })
       .addCase(fetchPopular.rejected, (state, action) => {
         state.popularStatus = 'failed';
@@ -70,7 +78,7 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchTopRated.fulfilled, (state, action) => {
         state.topRatedStatus = 'succeeded';
-        state.topRatedMovies = action.payload;
+        state.topRatedMovies = [...state.topRatedMovies, ...action.payload];
       })
       .addCase(fetchTopRated.rejected, (state, action) => {
         state.topRatedStatus = 'failed';
@@ -81,7 +89,7 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchUpcoming.fulfilled, (state, action) => {
         state.upcomingStatus = 'succeeded';
-        state.upcomingMovies = action.payload;
+        state.upcomingMovies = [...state.upcomingMovies, ...action.payload];
       })
       .addCase(fetchUpcoming.rejected, (state, action) => {
         state.upcomingStatus = 'failed';
@@ -89,7 +97,5 @@ const moviesSlice = createSlice({
       });
   },
 });
-
-
 
 export default moviesSlice.reducer;
