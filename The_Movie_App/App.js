@@ -15,6 +15,7 @@ import store from './Reducer/store';
 import app from './firebase';
 import Login from './src/screens/Login';
 import { getAuth, signOut } from 'firebase/auth';
+import { ThemeContext, ThemeProvider } from './src/screens/Theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,7 +70,7 @@ const BottomTabScreen = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Actor" component={Actor} />
       <Tab.Screen name="Search" component={Search} />
       <Tab.Screen name="Profile" component={Profile} />
@@ -80,31 +81,32 @@ const BottomTabScreen = () => {
 function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            HomeScreen
-          }}
-        >
-          <Stack.Screen
-            name="Login"
-            component={Login}
-          />
-          <Stack.Screen
-            name="Home"
-            component={BottomTabScreen}
-          />
-          <Stack.Screen
-            name="Detail"
-            component={Detail}
-          />
-          <Stack.Screen
-            name="MoreMovies"
-            component={MoreMovies}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <ThemeProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen
+              name="Login"
+              component={Login}
+            />
+            <Stack.Screen
+              name="Home"
+              component={BottomTabScreen}
+            />
+            <Stack.Screen
+              name="Detail"
+              component={Detail}
+            />
+            <Stack.Screen
+              name="MoreMovies"
+              component={MoreMovies}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
     </Provider>
   );
 }

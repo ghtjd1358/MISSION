@@ -36,28 +36,40 @@ const MoreMovies = () => {
   useEffect(() => {
     if (page > 1) {
       dispatch(fetchNowPlaying({ page }));
-      dispatch(fetchPopular({page}));
-      dispatch(fetchTopRated({page}));
-      dispatch(fetchUpcoming({page}));
+      dispatch(fetchPopular({ page }));
+      dispatch(fetchTopRated({ page }));
+      dispatch(fetchUpcoming({ page }));
     }
   }, [page, dispatch]);
 
+  const renderSection = (title, movies, status) => {
+    return (
+      <View>
+        <View>
+          <Text style={styles.sectionTitle}>{title || "Popular Movies"}</Text>
+        </View>
+        {status === 'loading' && (!movies || movies.length === 0) ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <FlatList
+            data={movies || popularMovies}
+            renderItem={renderMovieItem}
+            keyExtractor={item => item.id.toString()}  
+            onEndReached={loadMoreMovies}
+            onEndReachedThreshold={0.5}
+            extraData={movies || popularMovies}
+            initialNumToRender={20}
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+          />
+        )}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>{title || "Popular Movies"}</Text>
-      {popularStatus === 'loading' && (!movies || movies.length === 0) ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <FlatList
-          data={movies || popularMovies}
-          renderItem={renderMovieItem}
-          keyExtractor={item => item.id.toString()}  
-          onEndReached={loadMoreMovies}
-          onEndReachedThreshold={1}
-          extraData={movies || popularMovies}
-          initialNumToRender={10}
-        />
-      )}
+      {renderSection(title, movies, popularStatus)}
     </View>
   );
 };

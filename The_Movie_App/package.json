@@ -35,6 +35,8 @@
     "react-native-youtube": "^2.0.2",
     "react-native-youtube-iframe": "^2.3.0",
     "react-redux": "^9.1.2",
+    "react-simple-star-rating": "^5.1.7",
+    "react-star-ratings": "^2.3.0",
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {

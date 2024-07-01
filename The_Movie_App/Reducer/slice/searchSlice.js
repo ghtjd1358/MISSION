@@ -6,14 +6,14 @@ const URL = 'https://api.themoviedb.org/3/search/movie';
 
 export const searchMovies = createAsyncThunk(
   'search/fetchMovies',
-  async (query, thunkAPI) => {
+  async (query) => {
     try {
       const response = await axios.get(
         `${URL}?api_key=${API_KEY}&query=${query}&language=ko`
       );
       return response.data.results;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return new Error(error.message)
     }
   }
 );

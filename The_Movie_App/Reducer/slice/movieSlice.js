@@ -7,6 +7,7 @@ const URL = 'https://api.themoviedb.org/3';
 export const fetchNowPlaying = createAsyncThunk('movies/fetchNowPlaying', async (_, { getState }) => {
   const state = getState();
   const nextPage = Math.floor(state.movies.nowPlayingMovies.length / 20) + 1;
+  console.log('이것은 스테이크 무비', state.movies)
   const response = await axios.get(`${URL}/movie/now_playing?api_key=${API_KEY}&language=ko&page=${nextPage}`);
   return response.data.results;
 });

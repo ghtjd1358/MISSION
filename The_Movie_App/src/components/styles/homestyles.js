@@ -38,6 +38,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
+  buttonContainer : {
+    flexDirection : 'row',
+    justifyContent : 'space-between',
+    marginTop : 26,
+  },
+  moreButtonText : {
+    color : 'black',
+    fontWeight : 'bold',
+    fontSize : 14,
+    lineHeight : 50,
+    shadowOffset : '0 0 0 1'
+  },
+  icons : {
+    marginRight : 20,
+  }
 });
 
 export default styles;

@@ -3,7 +3,7 @@ import movieReducer from './slice/movieSlice';
 import searchReducer from './slice/searchSlice';
 import detailReducer from './slice/detailSlice';
 import filterReducer from './slice/filterSlice';
-// import ratingReducer from './slice/ratingSlice';
+import ratingReducer from './slice/ratingSlice';
 import favoritesReducer from './slice/favoriteSlice'
 
 
@@ -13,7 +13,7 @@ const store = configureStore({
         search: searchReducer,
         detail : detailReducer,
         filter : filterReducer,
-        // ratings : ratingReducer,
+        rating : ratingReducer,
         favorites : favoritesReducer
     }
 });

@@ -53,4 +53,7 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  activeButton: {
+    backgroundColor: 'navy', 
+  },
 });

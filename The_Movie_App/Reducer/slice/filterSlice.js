@@ -4,39 +4,34 @@ import axios from 'axios';
 const API_KEY = '95cf4754aa20e43e9a9c24ba6ab4df52';
 const URL = 'https://api.themoviedb.org/3';
 
-const URLS = {
-  popular: `${URL}/movie/popular?api_key=${API_KEY}`,
-  top_rated: `${URL}/movie/top_rated?api_key=${API_KEY}`,
-  now_playing: `${URL}/movie/now_playing?api_key=${API_KEY}`,
-};
-
 export const filterMovies = createAsyncThunk(
-  'movies/filterMovies',
-  async (filterType) => {
-    const url = URLS[filterType] || URLS.popular;
+  'filter/filterMovies',
+  async ({ filter, page }) => {
+    const URLS = {
+      popular: `${URL}/movie/popular?api_key=${API_KEY}&page=${page}`,
+      top_rated: `${URL}/movie/top_rated?api_key=${API_KEY}&page=${page}`,
+      now_playing: `${URL}/movie/now_playing?api_key=${API_KEY}&page=${page}`,
+    };
+
+    const url = URLS[filter] || URLS.popular;
     const response = await axios.get(url);
-    return response.data.results;
+    console.log('response data', response.data)
+    return { filter, movies: response.data.results, page };  
   }
 );
 
 const filterSlice = createSlice({
-  name: 'movies',
+  name: 'filter',
   initialState: {
-    items: [],
+    movies: {
+      popular: [],
+      top_rated: [],
+      now_playing: []
+    },
     status: null,
-    favorites: [],
     error: null,
   },
-  reducers: {
-    addFavorite: (state, action) => {
-      state.favorites.push(action.payload);
-    },
-    removeFavorite: (state, action) => {
-      state.favorites = state.favorites.filter(
-        movie => movie.id !== action.payload.id
-      );
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(filterMovies.pending, (state) => {
@@ -44,8 +39,13 @@ const filterSlice = createSlice({
         state.error = null;
       })
       .addCase(filterMovies.fulfilled, (state, action) => {
+        const { filter, movies, page } = action.payload;
         state.status = 'succeeded';
-        state.items = action.payload;
+        if (page === 1) {
+          state.movies[filter] = movies;
+        } else {
+          state.movies[filter] = [...state.movies[filter], ...movies];
+        }
       })
       .addCase(filterMovies.rejected, (state, action) => {
         state.status = 'failed';
@@ -53,7 +53,5 @@ const filterSlice = createSlice({
       });
   },
 });
-
-export const { addFavorite, removeFavorite } = filterSlice.actions;
 
 export default filterSlice.reducer;

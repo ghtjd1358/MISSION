@@ -5,19 +5,20 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import { movieDetail } from '../../Reducer/slice/detailSlice';
 import FavoriteButton from '../components/FavoriteButton';
 import styles from '../components/styles/detailStyles';
-// import StarRating from 'react-native-star-rating'; 
+import StarRatingComponent from '../components/starRating';
+
+
 
 const Detail = ({ route }) => {
   const { id } = route.params;
   const dispatch = useDispatch();
-  const movie = useSelector((state) => state.detail.movie);
-  const status = useSelector((state) => state.detail.status);
-  const error = useSelector((state) => state.detail.error);
+  const { status, movie, error } = useSelector(state => state.detail)
+
   const [videoId, setVideoId] = useState(null);
  
   useEffect(() => {
     dispatch(movieDetail(id));
-  }, [dispatch, id]);
+  }, [id]);
 
   if (status === 'loading') {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -29,7 +30,7 @@ const Detail = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {movie && ( // movie가 유효한 경우에만 렌더링
+      {movie && ( 
         <>
           <View style={styles.movieInfoContainer}>
             <Image
@@ -39,21 +40,13 @@ const Detail = ({ route }) => {
             />
             <View style={styles.movieDetailsContainer}>
               <Text style={styles.movieTitle}>{movie.title}</Text>
-              {/* <StarRating
-                disabled={false}
-                maxStars={5}
-                value={movie.vote_average}
-                starSize={30}
-                fullStarColor={'gold'}
-                emptyStarColor={'gold'}
-              /> */}
+              <StarRatingComponent movieId={id}/>
               <Text style={styles.movieDetail}>개봉일: {movie.release_date}</Text>
               <Text style={styles.movieDetail}>국가: {movie.production_countries.map(con => con.name).join(', ')}</Text>
               <Text style={styles.movieDetail}>언어: {movie.spoken_languages.map(l => l.name).join(', ')}</Text>
               <Text style={styles.movieDetail}>수익: ${movie.revenue.toLocaleString()}</Text>
               <Text style={styles.movieDetail}>제작회사: {movie.production_companies.map(c => c.name).join(', ')}</Text>
               <Text style={styles.movieDetail}>장르: {movie.genres.map(g => g.name).join(', ')}</Text>
-
               <FavoriteButton movieId={id} />
             </View>
           </View>

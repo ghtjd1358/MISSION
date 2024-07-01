@@ -5,7 +5,7 @@ const API_KEY = '95cf4754aa20e43e9a9c24ba6ab4df52';
 
 export const movieDetail = createAsyncThunk(
   'detail/movieDetail',
-  async (id, { rejectWithValue }) => {
+  async (id) => {
     try {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}&language=ko`, {
         params: {
@@ -15,7 +15,7 @@ export const movieDetail = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return new Error(error.message)
     }
   }
 );

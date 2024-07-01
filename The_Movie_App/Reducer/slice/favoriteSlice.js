@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import app from '../../firebase';
+import axios from 'axios';
 
 const db = getFirestore(app);
 const auth = getAuth();
@@ -9,7 +10,7 @@ const TMDB_API_KEY = '95cf4754aa20e43e9a9c24ba6ab4df52';
 
 export const fetchFavorites = createAsyncThunk(
   'favorites/fetchFavorites',
-  async (_, { rejectWithValue }) => {
+  async () => {
     const user = auth.currentUser;
     if (user) {
       try {
@@ -21,17 +22,16 @@ export const fetchFavorites = createAsyncThunk(
         const favoriteMovies = await Promise.all(
           querySnapshot.docs.map(async (favoriteDoc) => {
             const movieId = favoriteDoc.data().movieId;
-            const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`);
-            const movieData = await response.json();
-            return { id: favoriteDoc.id, ...movieData };
+            const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`) 
+            return { id: favoriteDoc.id, ...response.data };
           })
         );
         return favoriteMovies;
       } catch (err) {
-        return rejectWithValue(err.message);
+        throw new Error(err.message);
       }
     } else {
-      return rejectWithValue('User not authenticated');
+      throw new Error('User not authenticated');
     }
   }
 );
@@ -56,7 +56,7 @@ const favoritesSlice = createSlice({
       })
       .addCase(fetchFavorites.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       });
   },
 });

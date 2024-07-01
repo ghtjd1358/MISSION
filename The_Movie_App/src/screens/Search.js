@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, TextInput, Button, FlatList, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchMovies } from '../../Reducer/slice/searchSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -8,8 +8,7 @@ import styles from '../components/styles/searchStyles';
 const Search = () => {
   const [query, setQuery] = useState('');
   const dispatch = useDispatch();
-  const movies = useSelector((state) => state.search.movies);
-  const status = useSelector((state) => state.search.status);
+  const { movies, status } = useSelector(state => state.search)
   const navigation = useNavigation();
 
   const handleSearch = () => {

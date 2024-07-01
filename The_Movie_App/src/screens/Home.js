@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchNowPlaying, fetchPopular, fetchTopRated, fetchUpcoming } from '../../Reducer/slice/movieSlice';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../components/styles/homestyles'; 
+import Ionic from 'react-native-vector-icons/Ionicons'
 
 
 const STATUS_LOADING = 'loading';
@@ -34,7 +35,7 @@ const Home = () => {
   const renderMovieItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.movieItem} 
-      onPress={() => {
+      onPress={() => { 
         navigation.navigate('Detail', { id: item.id })
       }}
     >
@@ -43,13 +44,22 @@ const Home = () => {
         style={styles.poster}
       />
       <Text style={styles.movieTitle}>{item.title}</Text>
-      <Text style={styles.movieRating}>평점: {item.vote_average}</Text>
+      <Text style={styles.movieRating}>평점: {item.vote_average.toFixed(1)}
+      </Text>
     </TouchableOpacity>
   );
 
   const renderSection = (title, movies, status) => (
     <View>
+      <View style = {styles.buttonContainer}>
       <Text style={styles.sectionTitle}>{title}</Text>
+      <TouchableOpacity 
+        onPress={() => navigation.navigate('MoreMovies', { title, movies })}
+      >
+        <Text style={styles.moreButtonText}>더보기</Text>
+      </TouchableOpacity>
+      </View>
+      
       {status === STATUS_LOADING ? (
         <ActivityIndicator size="large" />
       ) : status === STATUS_FAILED ? (
@@ -58,15 +68,11 @@ const Home = () => {
         <FlatList
           data={movies}
           renderItem={renderMovieItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
         />
       )}
-      <Button 
-        title="더보기" 
-        onPress={() => navigation.navigate('MoreMovies', { title, movies })}
-      />
     </View>
   );
 
